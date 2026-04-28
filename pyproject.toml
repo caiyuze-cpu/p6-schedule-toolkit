@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "p6-schedule-toolkit"
+version = "2.0.0"
+description = "CSV to Primavera P6 XER converter for construction scheduling"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["primavera", "p6", "xer", "construction", "scheduling", "cpm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Construction Industry",
+    "Topic :: Office/Business :: Scheduling",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.scripts]
+p6-to-xer = "p6_schedule.cli:to_xer"
+p6-results = "p6_schedule.cli:read_results"
+p6-schedule = "p6_schedule.cli:cpm_schedule"
+p6-deploy = "p6_schedule.cli:p6_deploy"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
