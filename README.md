@@ -4,8 +4,8 @@
 
 <table>
 <tr>
-<td><img src="docs/images/p6-import-xer.png" alt="导入XER到P6" width="400"/></td>
-<td><img src="docs/images/p6-schedule-gantt.png" alt="P6排程甘特图" width="400"/></td>
+<td><img src="docs/images/p6-schedule-gantt.png" alt="导入XER到P6" width="400"/></td>
+<td><img src="docs/images/p6-import-xer.png" alt="P6排程甘特图" width="400"/></td>
 </tr>
 <tr>
 <td align="center">导入XER到P6</td>
