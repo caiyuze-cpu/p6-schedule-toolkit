@@ -2,6 +2,17 @@
 
 **CSV → XER → P6** 施工进度计划生成工具包。从CSV格式的进度计划自动生成Primavera P6可导入的XER文件，适用于风电、光伏、基建等施工进度计划编制。
 
+<table>
+<tr>
+<td><img src="docs/images/p6-import-xer.png" alt="导入XER到P6" width="400"/></td>
+<td><img src="docs/images/p6-schedule-gantt.png" alt="P6排程甘特图" width="400"/></td>
+</tr>
+<tr>
+<td align="center">导入XER到P6</td>
+<td align="center">F9排程后的甘特图与关键路径</td>
+</tr>
+</table>
+
 ## 特点
 
 - **AI驱动**：配合Claude Code / Cursor / GitHub Copilot等AI Agent使用，用自然语言描述工程信息，AI自动生成CSV进度计划
