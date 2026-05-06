@@ -1,117 +1,105 @@
-# P6 Schedule Toolkit
+# P6 Schedule Toolkit / P6 进度计划工具包
 
-**CSV → XER → P6** 施工进度计划生成工具包。从CSV格式的进度计划自动生成Primavera P6可导入的XER文件，适用于风电、光伏、基建等施工进度计划编制。
+[English](#english) | [中文](#中文)
 
-<table>
-<tr>
-<td><img src="docs/images/p6-import-xer.png" alt="导入XER到P6" width="400"/></td>
-<td><img src="docs/images/p6-schedule-gantt.png" alt="P6排程甘特图" width="400"/></td>
-</tr>
-<tr>
-<td align="center">导入XER到P6</td>
-<td align="center">F9排程后的甘特图与关键路径</td>
-</tr>
-</table>
+---
 
-## 特点
+## English
 
-- **AI驱动**：配合Claude Code / Cursor / GitHub Copilot等AI Agent使用，用自然语言描述工程信息，AI自动生成CSV进度计划
-- **CPM网络校验**：自动检测循环依赖、断链、孤立节点
-- **P6原生兼容**：生成的XER文件可直接导入Primavera P6，支持约束、里程碑、多种关系类型
-- **只写工期不写日期**：由P6排程引擎计算所有日期和关键线路
-- **结果读取**：从P6 SQLite数据库读取排程结果，无需P6客户端也可验证
+**P6 Schedule Toolkit** is an AI Agent-powered Primavera P6 schedule generation tool that automatically converts CSV-formatted schedules into P6-compatible XER files.
 
-## 快速开始
+### Key Features
 
-### 安装
+- **AI-Powered**: Works seamlessly with AI coding assistants like Claude Code, Cursor, and GitHub Copilot. Describe your project in natural language and let AI generate the CSV schedule automatically
+- **CPM Validation**: Built-in Critical Path Method engine that detects circular dependencies, broken links, and orphaned tasks before import
+- **Native P6 Compatibility**: Generated XER files can be directly imported into Primavera P6 with full support for constraints, milestones, and multiple relationship types
+- **Duration-Only Scheduling**: Write durations only — let P6's scheduling engine calculate all dates and identify the critical path
+- **Result Reading**: Read scheduling results directly from P6's SQLite database — no P6 client required for verification
+
+### Use Cases
+
+Suitable for construction scheduling in wind power, solar PV, infrastructure, and other industries.
+
+### Quick Start
 
 ```bash
+# Install
 pip install -e .
+
+# Convert CSV to XER
+p6-to-xer schedule.csv output.xer --project "My Project" --start 2026-06-01
 ```
 
-需要 Python 3.10+。
-
-### 1. 编制CSV进度计划
-
-用AI Agent（推荐）或手动编辑，按以下格式填写：
-
-```csv
-wbs_path,task_code,task_name,task_type,duration_days,predecessor_code,rel_type,lag_days,constraint_type,constraint_date
-施工准备,1100,开工里程碑,Milestone,0,,,,CS_MSO,2026-06-01
-施工准备,1110,项目部组建,Task,3,,,,
-基础工程,2010,WT01风机基础,Task,35,1100,FS,0,,
-```
-
-详细格式说明见 [docs/csv-format.md](docs/csv-format.md)。
-
-### 2. 转换为XER
-
-```bash
-p6-to-xer schedule.csv output.xer --project "My Project Schedule" --start 2026-06-01
-```
-
-或直接使用Python：
-
-```bash
-python -m p6_schedule.csv_to_xer schedule.csv output.xer --project "My Project Schedule" --start 2026-06-01
-```
-
-### 3. 导入P6
-
-1. 打开 Primavera P6
-2. **File → Import → XER** → 选择生成的 `.xer` 文件
-3. 打开项目，按 **F9** 排程
-4. P6自动计算所有日期、关键线路和浮时
-
-### 4. 查看排程结果
-
-```bash
-# 列出所有项目
-p6-results --db PPMDBSQLite.db
-
-p6-results -p "MyProject" --milestones
-
-# 关键路径分析
-p6-results -p "MyProject" --path
-
-# 文本甘特图
-p6-results -p "MyProject" --gantt
-```
-
-## 与AI Agent配合使用（推荐）
-
-本项目天然适合配合AI编程助手使用。工作流程：
+### Workflow
 
 ```
-用户描述工程信息 → AI Agent生成CSV → p6-to-xer转换 → P6导入排程 → p6-results验证
+User describes project → AI Agent generates CSV → p6-to-xer converts → Import to P6 → p6-results validates
 ```
 
-### Claude Code Skill
+### Project Structure
 
-如果你使用Claude Code，项目自带2个skill文件，复制到 `~/.claude/skills/` 即可：
+```
+p6-schedule-toolkit/
+├── src/p6_schedule/        # Python package
+│   ├── csv_to_xer.py       # CSV→XER converter
+│   ├── read_results.py     # P6 result reader
+│   ├── validate.py         # CPM network validation
+│   └── cli.py              # CLI entry points
+├── docs/                   # Documentation (also usable as AI knowledge base)
+├── examples/               # Sample schedules
+├── skills/                 # Claude Code skills
+└── tests/                  # Test suite
+```
+
+### Claude Code Integration
+
+If you use Claude Code, copy the skill files to `~/.claude/skills/`:
 
 ```bash
 cp skills/p6-schedule-generator.md ~/.claude/skills/
 cp skills/p6-results-reader.md ~/.claude/skills/
 ```
 
-- **p6-schedule-generator**: AI根据工程信息生成CSV进度计划、CPM验证、生成XER
-- **p6-results-reader**: AI读取P6数据库，分析里程碑和关键路径
+Then simply describe your project requirements (turbine count, contract milestones, resource constraints, etc.) and Claude Code will:
+- Generate the CSV schedule
+- Run CPM validation and XER generation
+- Guide you through P6 import and result verification
 
-只需告诉Claude Code你的工程信息（风机数量、合同里程碑日期、资源约束等），它会自动：
-- 编制CSV进度计划
-- 运行 `p6-deploy` CPM验证+生成XER
-- 指导你导入P6并读取结果验证
+---
 
-### 其他AI工具
+## 中文
 
-`docs/` 目录下的文档可以直接作为AI Agent的参考知识：
-- `scheduling-guide.md` — 施工进度计划编制要点
-- `xer-format.md` — XER格式关键要求
-- `csv-format.md` — CSV格式详细说明
-- `troubleshooting.md` — 常见问题排查
+**P6 Schedule Toolkit** 是一款 AI Agent 驱动的 Primavera P6 施工进度计划生成工具，能够将 CSV 格式的进度计划自动转换为 P6 可导入的 XER 文件。
 
-## 项目结构
+### 核心功能
+
+- **AI 驱动**：配合 Claude Code / Cursor / GitHub Copilot 等 AI Agent 使用，用自然语言描述工程信息，AI 自动生成 CSV 进度计划
+- **CPM 网络校验**：内置关键线路法引擎，自动检测循环依赖、断链、孤立节点
+- **P6 原生兼容**：生成的 XER 文件可直接导入 Primavera P6，支持约束、里程碑、多种关系类型
+- **只写工期不写日期**：由 P6 排程引擎计算所有日期和关键线路
+- **结果读取**：从 P6 SQLite 数据库读取排程结果，无需 P6 客户端也可验证
+
+### 应用场景
+
+适用于风电、光伏、基建等施工进度计划编制。
+
+### 快速上手
+
+```bash
+# 安装
+pip install -e .
+
+# CSV → XER 转换
+p6-to-xer schedule.csv output.xer --project "My Project" --start 2026-06-01
+```
+
+### 工作流程
+
+```
+用户描述工程信息 → AI Agent生成CSV → p6-to-xer转换 → P6导入排程 → p6-results验证
+```
+
+### 项目结构
 
 ```
 p6-schedule-toolkit/
@@ -121,52 +109,79 @@ p6-schedule-toolkit/
 │   ├── validate.py         # CPM网络校验
 │   └── cli.py              # 命令行入口
 ├── docs/                   # 文档（也可作为AI知识库）
-│   ├── csv-format.md       # CSV格式说明
-│   ├── xer-format.md       # XER格式要求
-│   ├── scheduling-guide.md # 编制要点
-│   └── troubleshooting.md  # 问题排查
 ├── examples/               # 样例
-│   └── wind_farm_12turbines.csv
 ├── skills/                 # Claude Code skills
-│   ├── p6-schedule-generator.md
-│   └── p6-results-reader.md
 └── tests/                  # 测试
 ```
 
-## 约束使用规则
+### Claude Code 配合使用
 
-| 约束类型 | 含义 | 使用场景 |
-|---------|------|---------|
-| `CS_MSO` | Must Start On（必须开始于） | 合同硬性里程碑节点 |
+如果你使用 Claude Code，将 skill 文件复制到 `~/.claude/skills/` 即可：
 
-**关键限制**：P6通过XER只识别 `CS_MSO`，`CS_MFEO`/`CS_MFIN` 会被静默忽略。
+```bash
+cp skills/p6-schedule-generator.md ~/.claude/skills/
+cp skills/p6-results-reader.md ~/.claude/skills/
+```
 
-**约束只加在里程碑上**，普通工序的日期由P6排程自然计算。
+只需告诉 Claude Code 你的工程信息（风机数量、合同里程碑日期、资源约束等），它会自动：
+- 编制 CSV 进度计划
+- 运行 CPM 验证和 XER 生成
+- 指导你导入 P6 并读取结果验证
 
-**不要设置plan_end_date**（PROJECT表字段30），否则P6从该日期做反向推算，所有工序都获得正浮时，不会出现关键线路。
+---
 
-## 常见问题
+## Quick Reference / 快速参考
 
-| 问题 | 原因 | 解决 |
-|------|------|------|
-| P6导入后无项目 | %F/%R字段数不匹配 | 逐表核对字段数量 |
-| 货币对话框阻止导入 | 包含CURRTYPE表 | 删除CURRTYPE相关行 |
-| 无关键线路 | 设置了plan_end_date | PROJECT字段30设None |
-| CS_MFEO约束无效 | P6 XER只认CS_MSO | 统一用CS_MSO |
-| 里程碑浮时异常 | 里程碑有多前置但有约束 | 约束覆盖网络逻辑，正常 |
+### CSV Format / CSV 格式
 
-更多问题见 [docs/troubleshooting.md](docs/troubleshooting.md)。
+```csv
+wbs_path,task_code,task_name,task_type,duration_days,predecessor_code,rel_type,lag_days,constraint_type,constraint_date
+施工准备,1100,开工里程碑,Milestone,0,,,,CS_MSO,2026-06-01
+施工准备,1110,项目部组建,Task,3,,,,
+基础工程,2010,WT01风机基础,Task,35,1100,FS,0,,
+```
 
-## 贡献
+### Constraint Types / 约束类型
 
-欢迎提交Issue和PR！特别是：
+| Type | Meaning | Use Case |
+|------|---------|----------|
+| `CS_MSO` | Must Start On | Contract milestone nodes |
 
+**Note**: P6 XER only recognizes `CS_MSO`. Other constraints like `CS_MFEO`/`CS_MFIN` are silently ignored.
+
+### Import to P6 / 导入 P6
+
+1. Open Primavera P6
+2. **File → Import → XER** → Select the generated `.xer` file
+3. Open project, press **F9** to schedule
+4. P6 automatically calculates all dates, critical path, and float
+
+### View Results / 查看结果
+
+```bash
+p6-results --db PPMDBSQLite.db
+p6-results -p "MyProject" --milestones
+p6-results -p "MyProject" --path
+p6-results -p "MyProject" --gantt
+```
+
+---
+
+## Contributing / 贡献
+
+Contributions welcome! Issues and PRs are appreciated, especially for:
+- Industry templates (solar, thermal power, transmission, etc.)
+- P6 version compatibility testing
+- Documentation improvements
+- Bug fixes and new features
+
+欢迎提交 Issue 和 PR！特别是：
 - 新的行业模板（光伏、火电、输变电等）
-- 不同P6版本的兼容性测试
+- 不同 P6 版本的兼容性测试
 - 文档翻译和改进
-- Bug修复和新功能
+- Bug 修复和新功能
 - 联系我：1253760535（微信）
 
-## License
+## License / 许可证
 
 MIT
