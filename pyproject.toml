@@ -23,6 +23,7 @@ p6-to-xer = "p6_schedule.cli:to_xer"
 p6-results = "p6_schedule.cli:read_results"
 p6-schedule = "p6_schedule.cli:cpm_schedule"
 p6-deploy = "p6_schedule.cli:p6_deploy"
+p6-dcma = "p6_schedule.cli:dcma_quality"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

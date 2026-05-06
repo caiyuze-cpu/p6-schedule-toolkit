@@ -5,6 +5,7 @@ import sys
 from .csv_to_xer import convert
 from .cpm_scheduler import schedule, print_schedule, print_critical_paths, print_milestone_check
 from .deploy import deploy
+from .dcma_checker import dcma_check, print_dcma_report
 
 
 def to_xer() -> None:
@@ -63,6 +64,37 @@ def cpm_schedule() -> None:
         print()
 
     print_schedule(result)
+
+
+def dcma_quality() -> None:
+    parser = argparse.ArgumentParser(
+        prog='p6-dcma',
+        description='DCMA 14-Point Schedule Quality Evaluation',
+    )
+    parser.add_argument('csv_file', help='Input CSV file path')
+    parser.add_argument('--start', '-s', default='2026-01-01', help='Project start date (YYYY-MM-DD)')
+    parser.add_argument('--max-lag', type=int, default=30, help='Max lag days threshold (default: 30)')
+    parser.add_argument('--max-duration', type=int, default=60, help='Max task duration threshold (default: 60)')
+    args = parser.parse_args()
+
+    from .csv_to_xer import parse_csv, build_tasks_and_rels
+
+    try:
+        rows = parse_csv(args.csv_file)
+        tasks, rels = build_tasks_and_rels(rows)
+    except (ValueError, FileNotFoundError) as e:
+        print(f'Error: {e}', file=sys.stderr)
+        sys.exit(1)
+
+    thresholds = {
+        'max_lag_days': args.max_lag,
+        'max_task_duration': args.max_duration,
+    }
+
+    result = dcma_check(tasks, rels, args.start, thresholds)
+    print_dcma_report(result)
+
+    sys.exit(0 if result.passed else 1)
 
 
 def p6_deploy() -> None:
