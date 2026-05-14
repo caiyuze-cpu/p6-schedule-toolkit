@@ -20,6 +20,20 @@
 
 Suitable for construction scheduling in wind power, solar PV, infrastructure, and other industries.
 
+### Screenshots
+
+<p align="center">
+  <img src="docs/images/p6-schedule-gantt.png" alt="P6 Schedule Gantt Chart" width="700">
+  <br>
+  <em>P6 Gantt chart after scheduling</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/p6-import-xer.png" alt="P6 Import XER" width="700">
+  <br>
+  <em>P6 XER import dialog</em>
+</p>
+
 ### Quick Start
 
 ```bash
@@ -82,6 +96,20 @@ Then simply describe your project requirements (turbine count, contract mileston
 ### 应用场景
 
 适用于风电、光伏、基建等施工进度计划编制。
+
+### 效果展示
+
+<p align="center">
+  <img src="docs/images/p6-schedule-gantt.png" alt="P6 甘特图" width="700">
+  <br>
+  <em>P6 排程后的甘特图结果</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/p6-import-xer.png" alt="P6 导入XER" width="700">
+  <br>
+  <em>P6 导入 XER 文件界面</em>
+</p>
 
 ### 快速上手
 
