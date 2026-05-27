@@ -18,6 +18,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
 [project.scripts]
 p6-to-xer = "p6_schedule.cli:to_xer"
 p6-results = "p6_schedule.cli:read_results"

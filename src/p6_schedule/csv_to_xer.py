@@ -123,7 +123,8 @@ def build_wbs(tasks: dict, proj_id: int) -> tuple[list[dict], dict]:
         })
         wbs_id += 1
 
-    # Merge root WBS into P6 project node: remove root, promote children
+    # Merge root WBS into P6 project node: remove root, promote children.
+    # Only remove root if child WBS entries exist; otherwise keep it.
     if wbs_rows and wbs_rows[0].get('proj_node_flag') == 'Y':
         root_id = wbs_rows[0]['wbs_id']
         root_path = None
@@ -131,23 +132,28 @@ def build_wbs(tasks: dict, proj_id: int) -> tuple[list[dict], dict]:
             if wbs_map[p] == root_id:
                 root_path = p
                 break
-        wbs_rows.pop(0)
-        if root_path:
-            del wbs_map[root_path]
-        for row in wbs_rows:
-            if row['parent_wbs_id'] == root_id:
-                row['parent_wbs_id'] = ''
-        for code, t in tasks.items():
-            wp = t['wbs_path'].strip('.')
-            if wp in wbs_map:
-                continue
-            parent = '.'.join(wp.split('.')[:-1])
-            if parent in wbs_map:
-                wbs_map[wp] = wbs_map[parent]
+
+        has_children = any(r['parent_wbs_id'] == root_id for r in wbs_rows[1:])
+
+        if has_children:
+            wbs_rows.pop(0)
+            if root_path:
+                del wbs_map[root_path]
+            for row in wbs_rows:
+                if row['parent_wbs_id'] == root_id:
+                    row['parent_wbs_id'] = ''
+            for code, t in tasks.items():
+                wp = t['wbs_path'].strip('.')
+                if wp in wbs_map:
+                    continue
+                parent = '.'.join(wp.split('.')[:-1])
+                if parent in wbs_map:
+                    wbs_map[wp] = wbs_map[parent]
 
     task_wbs: dict[str, int] = {}
+    fallback = list(wbs_map.values())[0] if wbs_map else ID_OFFSET['wbs']
     for code, t in tasks.items():
-        task_wbs[code] = wbs_map.get(t['wbs_path'].strip('.'), list(wbs_map.values())[0])
+        task_wbs[code] = wbs_map.get(t['wbs_path'].strip('.'), fallback)
 
     return wbs_rows, task_wbs
 

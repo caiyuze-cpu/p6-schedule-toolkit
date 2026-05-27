@@ -182,4 +182,4 @@ class TestGenerateXER:
         xer = generate_xer(tasks, rels, 'Test', '2026-01-01')
         wbs_r_lines = [l for l in xer.split('\r\n')
                        if l.startswith('%R') and l.count('\t') >= 10 and 'WS_Open' in l]
-        assert len(wbs_r_lines) >= 3  # Root, Phase1, Phase2
+        assert len(wbs_r_lines) >= 2  # Phase1, Phase2 (root merged into project node)
